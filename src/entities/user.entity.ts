@@ -14,4 +14,7 @@ export class User extends Base {
 
   @Column({ select: false })
   password!: string;
+
+  @Column({ nullable: true })
+  gender?: string;
 }

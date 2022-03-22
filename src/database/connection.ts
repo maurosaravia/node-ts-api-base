@@ -5,6 +5,7 @@ const connection = {
   async create(callback?: (c: Connection) => void): Promise<void> {
     try {
       const connection = await createConnection(config);
+      await connection.synchronize();
       if (callback) {
         callback(connection);
       }

@@ -46,4 +46,29 @@ export class AuthorizationService {
       return false;
     }
   }
+
+  async getCurrentUser(
+    action: Action
+  ): Promise<number> {
+    const jwt = Container.get(JWTService);
+    try {
+      let token = action.request.headers['authorization'];
+      if (!token) {
+        return 0;
+      }
+      if (token.startsWith('Bearer ')) {
+        // Remove Bearer from authentication scheme header
+        token = token.replace('Bearer ', '');
+      }
+      const payload = await jwt.verifyJWT(token); // ToDo Cambiar a DecodeJWT
+      const {
+        data: { userId }
+      } = payload;
+      return userId;
+    } catch (error) {
+      // Here we should do something with the error like loggin
+      console.log(error);
+      return 0;
+    }
+  }
 }

@@ -11,35 +11,35 @@ import {
 } from 'routing-controllers';
 import { InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import { Service } from 'typedi';
-import { User } from '@entities/user.entity';
-import { UsersService } from '@services/users.service';
+import { Topic } from '@entities/topic.entity';
+import { TopicsService } from '@services/topics.service';
 import { ErrorsMessages } from '../constants/errorMessages';
-import { SignUpDTO } from '@dto/signUpDTO';
+import { TopicDTO } from '@dto/topicDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
 
-@JsonController('/users')
+@JsonController('/topics')
 @Service()
-export class UserController {
-  constructor(private readonly usersService: UsersService) {}
+export class TopicController {
+  constructor(private readonly topicsService: TopicsService) {}
 
   @Authorized()
   @Get()
-  async index(): Promise<User[]> {
-    return this.usersService.listUsers();
+  async index(): Promise<Topic[]> {
+    return this.topicsService.listTopics();
   }
 
   @Authorized()
   @Get('/:id')
-  async show(@Param('id') id: number): Promise<User | undefined> {
-    return this.usersService.showUser(id);
+  async show(@Param('id') id: number): Promise<Topic | undefined> {
+    return this.topicsService.showTopic(id);
   }
 
   @Authorized()
   @Post()
-  async post(@Body() userDTO: SignUpDTO): Promise<InsertResult> {
+  async post(@Body() topicDTO: TopicDTO): Promise<InsertResult> {
     try {
-      return await this.usersService.createUser(
-        EntityMapper.mapTo(User, userDTO)
+      return await this.topicsService.createTopic(
+        EntityMapper.mapTo(Topic, topicDTO)
       );
     } catch (error: any) {
       throw new BadRequestError(
@@ -52,15 +52,15 @@ export class UserController {
   @Put('/:id')
   async put(
     @Param('id') id: number,
-    @Body() userDTO: SignUpDTO
+    @Body() topicDTO: TopicDTO
   ): Promise<UpdateResult> {
-    const user: User = EntityMapper.mapTo(User, userDTO);
-    return this.usersService.editUser({ id, user });
+    const topic: Topic = EntityMapper.mapTo(Topic, topicDTO);
+    return this.topicsService.editTopic({ id, topic });
   }
 
   @Authorized()
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<DeleteResult> {
-    return this.usersService.deleteUser(id);
+    return this.topicsService.deleteTopic(id);
   }
 }

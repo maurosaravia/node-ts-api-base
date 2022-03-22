@@ -44,7 +44,11 @@ export class AuthController {
     @Body({ validate: true }) logOutDTO: LogoutDTO,
     @Req() request: Request
   ) {
-    const token = request.headers['authorization'] as string;
+    let token = request.headers['authorization'] as string;
+    if (token.startsWith('Bearer ')) {
+      // Remove Bearer from authentication scheme header
+      token = token.replace('Bearer ', '');
+    }
     const email = logOutDTO.email;
     const tokenAddToBlacklist: number = await this.sessionService.logOut({
       email,
