@@ -7,13 +7,9 @@ import { Conversation } from '@entities/conversation.entity';
 export class ConversationsService {
   private readonly conversationRepository = getRepository<Conversation>(Conversation);
 
-  listConversations() {
-    return this.conversationRepository.find();
+  listConversationsByUser(userId: number) {
+    return this.conversationRepository.find({ where: [{ user1Id: userId }, { user2Id: userId }] });
   }
-
-  // showTopic(id: number) {
-  //   return this.conversationRepository.findOne(id);
-  // }
 
   async createConversation(conversation: Conversation) {
     const exists = (await this.conversationRepository.count({ where:
@@ -21,8 +17,4 @@ export class ConversationsService {
         { user1Id: conversation.user2Id, user2Id: conversation.user1Id }] })) > 0;
     return !exists? this.conversationRepository.save(conversation) : null;
   }
-
-//   deleteTopic(id: number) {
-//     return this.conversationRepository.delete(id);
-//   }
 }
