@@ -12,7 +12,7 @@ export class ConversationsService {
   }
 
   async createConversation(conversation: Conversation) {
-    return await this.existsConversation(conversation) ?
+    return await !this.existsConversation(conversation) ?
       this.conversationRepository.save(conversation) : null;
   }
 
