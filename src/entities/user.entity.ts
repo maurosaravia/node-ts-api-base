@@ -1,5 +1,6 @@
 import { Column, Entity, Index } from 'typeorm';
 import { Base } from './base.entity';
+import { Roles } from '@constants/Roles';
 @Entity()
 export class User extends Base {
   @Column({ nullable: true })
@@ -20,4 +21,7 @@ export class User extends Base {
 
   @Column({ nullable: true })
   image?: string; // Image as Base64
+
+  @Column({ nullable: false })
+  role!: Roles;
 }

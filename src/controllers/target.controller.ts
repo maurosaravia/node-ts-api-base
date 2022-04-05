@@ -18,6 +18,7 @@ import { TargetDTO } from '@dto/targetDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
 import { Conversation } from '@entities/conversation.entity';
 import { ConversationsService } from '@services/conversation.service';
+import { Roles } from '@constants/Roles';
 
 @JsonController('/targets')
 @Service()
@@ -25,10 +26,16 @@ export class TargetController {
   constructor(private readonly targetsService: TargetsService
     , private readonly conversationsService: ConversationsService) {}
 
-  @Authorized()
+  @Authorized(Roles.User)
   @Get()
-  async index(@CurrentUser() user :number): Promise<Target[]> {
+  async listMyTargets(@CurrentUser() user :number): Promise<Target[]> {
     return this.targetsService.listTargetsByUser(user);
+  }
+
+  @Authorized(Roles.Admin)
+  @Get('/all')
+  async listAllTargets(): Promise<Target[]> {
+    return this.targetsService.listTargets();
   }
 
   // ToDo Borrar
@@ -37,7 +44,7 @@ export class TargetController {
   //   return this.targetsService.showTarget(id);
   // }
 
-  @Authorized()
+  @Authorized(Roles.User)
   @Post()
   async post(@CurrentUser() user :number, @Body() targetDTO: TargetDTO): Promise<Target> {
     try {
@@ -68,7 +75,7 @@ export class TargetController {
     }
   }
 
-  @Authorized()
+  @Authorized(Roles.User)
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.targetsService.deleteTarget(id);

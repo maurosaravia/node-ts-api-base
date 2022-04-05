@@ -6,6 +6,10 @@ import { Conversation } from '@entities/conversation.entity';
 export class ConversationsService {
   private readonly conversationRepository = getRepository<Conversation>(Conversation);
 
+  async listConversations() {
+    return this.conversationRepository.find();
+  }
+
   async listConversationsByUser(userId: number) {
     return this.conversationRepository.find({ where: [{ user1Id: userId },
       { user2Id: userId }] });

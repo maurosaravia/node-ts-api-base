@@ -16,25 +16,26 @@ import { UsersService } from '@services/users.service';
 import { ErrorsMessages } from '../constants/errorMessages';
 import { SignUpDTO } from '@dto/signUpDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
+import { Roles } from '@constants/Roles';
 
 @JsonController('/users')
 @Service()
 export class UserController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Get()
   async index(): Promise<User[]> {
     return this.usersService.listUsers();
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Get('/:id')
   async show(@Param('id') id: number): Promise<User | undefined> {
     return this.usersService.showUser(id);
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Post()
   async post(@Body() userDTO: SignUpDTO): Promise<InsertResult> {
     try {
@@ -48,7 +49,7 @@ export class UserController {
     }
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Put('/:id')
   async put(
     @Param('id') id: number,
@@ -58,7 +59,7 @@ export class UserController {
     return this.usersService.editUser({ id, user });
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.usersService.deleteUser(id);
