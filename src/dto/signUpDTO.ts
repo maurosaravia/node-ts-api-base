@@ -10,4 +10,7 @@ export class SignUpDTO extends BaseUserDTO {
 
   @IsString()
   gender?: string;
+
+  @IsString()
+  image?: string; // Image as Base64
 }

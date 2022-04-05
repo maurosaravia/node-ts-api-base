@@ -17,4 +17,7 @@ export class User extends Base {
 
   @Column({ nullable: true })
   gender?: string;
+
+  @Column({ nullable: true })
+  image?: string; // Image as Base64
 }
