@@ -21,4 +21,10 @@ export class ConversationsService {
       [{ user1Id: conversation.user1Id, user2Id: conversation.user2Id },
         { user1Id: conversation.user2Id, user2Id: conversation.user1Id }] }) > 0;
   }
+
+  async isUserInConversation(userId: number, conversationId: number) {
+    const conversation = await this.conversationRepository.findOne({ where:
+       { id: conversationId } });
+    return conversation?.user1Id === userId || conversation?.user2Id === userId;
+  }
 }

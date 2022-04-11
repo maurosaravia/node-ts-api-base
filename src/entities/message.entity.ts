@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from './base.entity';
-import { Topic } from './topic.entity';
 import { Conversation } from './conversation.entity';
 import { User } from './user.entity';
 @Entity()
@@ -8,8 +7,8 @@ export class Message extends Base {
   @Column({ type: 'int', nullable: false })
   conversationId!: number;
 
-  @ManyToOne( () => Topic )
-  @JoinColumn({ name: 'topicId' })
+  @ManyToOne( () => Conversation )
+  @JoinColumn({ name: 'conversationId' })
   conversation!: Conversation;
 
   @Column({ nullable: false })
