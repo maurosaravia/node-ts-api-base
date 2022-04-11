@@ -22,6 +22,6 @@ export class User extends Base {
   @Column({ nullable: true })
   image?: string; // Image as Base64
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: Roles.User })
   role!: Roles;
 }
