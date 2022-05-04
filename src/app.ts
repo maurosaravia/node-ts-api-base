@@ -12,6 +12,8 @@ import { middlewares } from '@middlewares';
 import { controllers } from '@controllers';
 import { swaggerSpec } from './swagger';
 import { DOCS_ENABLED } from '@config';
+import { CronJob } from 'cron';
+import { JobService } from '@services/job.service';
 
 // required by routing-controllers
 useContainer(Container);
@@ -37,5 +39,8 @@ useExpressServer(app, routingControllersOptions);
 if (DOCS_ENABLED === 'true') {
   swaggerSpec(getMetadataArgsStorage, routingControllersOptions, app);
 }
+
+const job = new CronJob('0 0 * * *', JobService.getInstance().deleteOldTargets);
+job.start();
 
 export default app;

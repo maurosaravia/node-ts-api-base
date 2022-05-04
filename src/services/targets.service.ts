@@ -7,8 +7,12 @@ import { getDistance } from 'geolib';
 export class TargetsService {
   private readonly targetRepository = getRepository<Target>(Target);
 
-  listTargets() {
-    return this.targetRepository.find();
+  listTargets(topicId?: number) {
+    if (topicId !== undefined) {
+      return this.targetRepository.find({ where: { topicId: topicId } });
+    } else {
+      return this.targetRepository.find();
+    }
   }
 
   listTargetsByUser(userId: number) {
@@ -45,5 +49,12 @@ export class TargetsService {
       }
     });
     return result;
+  }
+
+  async deleteOldTargets() {
+    const date = new Date();
+    date.setDate(date.getDate() - 7);
+    this, this.targetRepository.createQueryBuilder().delete()
+      .where('createdAt < :date', { date: date }).execute();
   }
 }

@@ -7,7 +7,8 @@ import {
   Delete,
   Authorized,
   CurrentUser,
-  BadRequestError
+  BadRequestError,
+  Params
 } from 'routing-controllers';
 import { DeleteResult } from 'typeorm';
 import { Service } from 'typedi';
@@ -33,9 +34,9 @@ export class TargetController {
   }
 
   @Authorized(Roles.Admin)
-  @Get('/all')
-  async listAllTargets(): Promise<Target[]> {
-    return this.targetsService.listTargets();
+  @Get('/all/:topicId?')
+  async listAllTargets(@Params() { topicId } ): Promise<Target[]> {
+    return this.targetsService.listTargets(topicId);
   }
 
   // ToDo Borrar
