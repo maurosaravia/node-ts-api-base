@@ -16,6 +16,7 @@ import { MessageDTO } from '@dto/messageDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
 import { Message } from '@entities/message.entity';
 import { ConversationsService } from '@services/conversation.service';
+import { Roles } from '@constants/Roles';
 
 @JsonController('/messages')
 @Service()
@@ -37,7 +38,7 @@ export class MessageController {
     }
   }
 
-  @Authorized()
+  @Authorized(Roles.User)
   @Post()
   async sendMessage(@CurrentUser() userId :number,
     @Body({ validate: true }) messageDTO: MessageDTO) {
@@ -52,7 +53,7 @@ export class MessageController {
     return this.messagesService.sendMessage(message);
   }
 
-  @Authorized()
+  @Authorized(Roles.User)
   @Put('/readMessages')
   async readMessages(@CurrentUser() userId :number,
     @BodyParam('conversationId') conversationId: number,

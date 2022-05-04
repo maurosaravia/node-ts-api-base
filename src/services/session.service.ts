@@ -9,6 +9,7 @@ import { DatabaseError } from '@exception/database.error';
 import { RedisError } from '@exception/redis.error';
 import { HttpError } from 'routing-controllers';
 import { HttpStatusCode } from '@constants/httpStatusCode';
+import { Roles } from '@constants/Roles';
 
 @Service()
 export class SessionService {
@@ -20,6 +21,7 @@ export class SessionService {
   private readonly userRepository = getRepository<User>(User);
 
   async signUp(user: User) {
+    user.role = Roles.User;
     this.userService.hashUserPassword(user);
     try {
       return await this.userRepository.save(user);

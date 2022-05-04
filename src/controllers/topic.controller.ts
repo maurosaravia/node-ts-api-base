@@ -16,25 +16,26 @@ import { TopicsService } from '@services/topics.service';
 import { ErrorsMessages } from '../constants/errorMessages';
 import { TopicDTO } from '@dto/topicDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
+import { Roles } from '@constants/Roles';
 
 @JsonController('/topics')
 @Service()
 export class TopicController {
   constructor(private readonly topicsService: TopicsService) {}
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Get()
   async index(): Promise<Topic[]> {
     return this.topicsService.listTopics();
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Get('/:id')
   async show(@Param('id') id: number): Promise<Topic | undefined> {
     return this.topicsService.showTopic(id);
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Post()
   async post(@Body() topicDTO: TopicDTO): Promise<InsertResult> {
     try {
@@ -48,7 +49,7 @@ export class TopicController {
     }
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Put('/:id')
   async put(
     @Param('id') id: number,
@@ -58,7 +59,7 @@ export class TopicController {
     return this.topicsService.editTopic({ id, topic });
   }
 
-  @Authorized()
+  @Authorized(Roles.Admin)
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.topicsService.deleteTopic(id);

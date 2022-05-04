@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { BaseUserDTO } from './baseUserDTO';
 
 export class SignUpDTO extends BaseUserDTO {
@@ -8,6 +8,11 @@ export class SignUpDTO extends BaseUserDTO {
   @IsString()
   lastName?: string;
 
+  @IsOptional()
   @IsString()
   gender?: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string; // Image as Base64
 }
