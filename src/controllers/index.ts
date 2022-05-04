@@ -4,6 +4,7 @@ import { TopicController } from './topic.controller';
 import { TargetController } from './target.controller';
 import { ConversationController } from './conversation.controller';
 import { MessageController } from './message.controller';
+import { SystemConfigController } from './systemConfig.controller';
 
 export const controllers = [AuthController, UserController, TopicController,
-  TargetController, ConversationController, MessageController];
+  TargetController, ConversationController, MessageController, SystemConfigController];
