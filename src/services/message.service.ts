@@ -19,7 +19,7 @@ export class MessagesService {
 
   async getMessages(conversationId: number, page: number, pageLength: number) {
     return this.messageRepository.find({ where: { conversationId: conversationId },
-      skip: (page - 1) * pageLength, take: pageLength });
+      skip: (page - 1) * pageLength, take: pageLength, order: { createdAt: 'DESC' } });
   }
 
   async readMessages(conversationId: number, userId: number, readDate: Date) {
