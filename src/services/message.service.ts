@@ -30,4 +30,8 @@ export class MessagesService {
       .andWhere('createdAt < :readDate', { readDate: readDate })
       .execute();
   }
+  async unreadCount(conversationId: number) {
+    return this.messageRepository.count({ where: { conversationId: conversationId,
+      readAt: null } });
+  }
 }
