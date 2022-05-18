@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { getRepository, Not } from 'typeorm';
+import { DeleteResult, getRepository, Not } from 'typeorm';
 import { Target } from '@entities/target.entity';
 import { getDistance } from 'geolib';
 
@@ -7,27 +7,31 @@ import { getDistance } from 'geolib';
 export class TargetsService {
   private readonly targetRepository = getRepository<Target>(Target);
 
-  listTargets() {
-    return this.targetRepository.find();
+  listTargets(topicId?: number): Promise<Target[]> {
+    if (topicId !== undefined) {
+      return this.targetRepository.find({ where: { topicId: topicId } });
+    } else {
+      return this.targetRepository.find();
+    }
   }
 
-  listTargetsByUser(userId: number) {
+  listTargetsByUser(userId: number): Promise<Target[]> {
     return this.targetRepository.find({ where: { userId: userId } });
   }
 
-  countTargetsByUser(userId: number) {
+  countTargetsByUser(userId: number): Promise<number> {
     return this.targetRepository.count({ where: { userId: userId } });
   }
 
-  showTarget(id: number) {
+  showTarget(id: number): Promise<Target | undefined> {
     return this.targetRepository.findOne(id);
   }
 
-  createTarget(target: Target) {
+  createTarget(target: Target): Promise<Target> {
     return this.targetRepository.save(target);
   }
 
-  deleteTarget(id: number) {
+  deleteTarget(id: number): Promise<DeleteResult> {
     return this.targetRepository.delete(id);
   }
 
@@ -45,5 +49,12 @@ export class TargetsService {
       }
     });
     return result;
+  }
+
+  async deleteOldTargets(): Promise<void> {
+    const date = new Date();
+    date.setDate(date.getDate() - 7);
+    this.targetRepository.createQueryBuilder().delete()
+      .where('createdAt < :date', { date: date }).execute();
   }
 }
