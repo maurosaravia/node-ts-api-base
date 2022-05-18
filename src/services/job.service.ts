@@ -1,6 +1,7 @@
-import Container from 'typedi';
+import { Container, Service } from 'typedi';
 import { TargetsService } from './targets.service';
 
+@Service()
 export class JobService {
   private static instance: JobService;
 
@@ -12,8 +13,8 @@ export class JobService {
     return this.instance;
   }
 
-  async deleteOldTargets() {
+  async deleteOldTargets(): Promise<void> {
     const targetsService = Container.get(TargetsService);
-    return targetsService.deleteOldTargets();
+    targetsService.deleteOldTargets();
   }
 }
