@@ -7,7 +7,8 @@ import {
   Put,
   Delete,
   Authorized,
-  BadRequestError
+  BadRequestError,
+  CurrentUser
 } from 'routing-controllers';
 import { InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 import { Service } from 'typedi';
@@ -51,8 +52,18 @@ export class UserController {
 
   @Authorized(Roles.Admin)
   @Put('/:id')
-  async put(
+  async updateUser(
     @Param('id') id: number,
+    @Body() userDTO: SignUpDTO
+  ): Promise<UpdateResult> {
+    const user: User = EntityMapper.mapTo(User, userDTO);
+    return this.usersService.editUser({ id, user });
+  }
+
+  @Authorized(Roles.User)
+  @Put()
+  async updateSelf(
+    @CurrentUser() id: number,
     @Body() userDTO: SignUpDTO
   ): Promise<UpdateResult> {
     const user: User = EntityMapper.mapTo(User, userDTO);
