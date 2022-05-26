@@ -19,6 +19,7 @@ import { SignUpDTO } from '@dto/signUpDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
 import { Roles } from '@constants/Roles';
 import { EmailService } from '@services/email.service';
+import { ResetPasswordDTO } from '@dto/resetPasswordDTO';
 
 @JsonController('/users')
 @Service()
@@ -94,5 +95,24 @@ export class UserController {
       const emailService = Container.get(EmailService);
       await emailService.sendVerification(user);
     }
+  }
+
+  @Post('passwordReset')
+  async passwordReset(
+    @Body() email: string
+  ) {
+    const user = await this.usersService.showUserByEmail(email);
+    if (user) {
+      const emailService = Container.get(EmailService);
+      await emailService.sendPasswordReset(user);
+    }
+    return user;
+  }
+
+  @Post('resetPassword')
+  async resetPassword(
+    @Body() passwordDTO: ResetPasswordDTO
+  ) {
+    return this.usersService.resetPassword(passwordDTO.token, passwordDTO.password);
   }
 }

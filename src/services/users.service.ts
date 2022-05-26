@@ -36,6 +36,10 @@ export class UsersService {
     return this.userRepository.findOne(id);
   }
 
+  showUserByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email: email } });
+  }
+
   createUser(user: User) {
     this.hashUserPassword(user);
     return this.userRepository.insert(user);
@@ -72,5 +76,31 @@ export class UsersService {
       console.log(error);
       return 0;
     }
+  }
+
+  async resetPassword(
+    token: string,
+    password: string
+  ): Promise<number> {
+    try {
+      if (!token) {
+        return 0;
+      }
+      const payload = await this.jwtService.verifyJWT(token);
+      const {
+        data: { userId }
+      } = payload;
+      await this.changeUserPassword(userId, password);
+      return userId;
+    } catch (error) {
+      // Here we should do something with the error like loggin
+      console.log(error);
+      return 0;
+    }
+  }
+
+  async changeUserPassword(id: number, password: string) {
+    password = this.hashPassword(password);
+    return this.userRepository.save({ id: id, password: password });
   }
 }

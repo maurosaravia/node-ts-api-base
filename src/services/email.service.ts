@@ -51,6 +51,16 @@ export class EmailService {
     const token = jwtService.createVerificationToken(user);
     EmailService.sendEmail({ from: SENDER_EMAIL ?? '', to: user.email,
       subject: 'Email verification',
-      text: `Click on the link to verify your account ${ BASE_URL??'' + token }` });
+      text: `Click on the link to verify your account
+      ${ BASE_URL??''}/users/verify?token= ${token}` });
+  }
+
+  async sendPasswordReset(user: User) {
+    const jwtService = Container.get(JWTService);
+    const token = jwtService.createVerificationToken(user);
+    EmailService.sendEmail({ from: SENDER_EMAIL ?? '', to: user.email,
+      subject: 'Password reset',
+      text: `Click on the link to reset your password 
+      ${BASE_URL??''}/users/resetPassword?token=${token}` });
   }
 }
