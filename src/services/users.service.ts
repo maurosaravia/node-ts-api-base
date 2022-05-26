@@ -49,4 +49,28 @@ export class UsersService {
   deleteUser(id: number) {
     return this.userRepository.delete(id);
   }
+
+  verifyUser(id: number) {
+    return this.userRepository.save({ id: id, verified: true });
+  }
+
+  async verifyAccount(
+    token: string
+  ): Promise<number> {
+    try {
+      if (!token) {
+        return 0;
+      }
+      const payload = await this.jwtService.verifyJWT(token);
+      const {
+        data: { userId }
+      } = payload;
+      await this.verifyUser(userId);
+      return userId;
+    } catch (error) {
+      // Here we should do something with the error like loggin
+      console.log(error);
+      return 0;
+    }
+  }
 }

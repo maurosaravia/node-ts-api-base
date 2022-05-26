@@ -24,4 +24,7 @@ export class User extends Base {
 
   @Column({ nullable: false, default: Roles.User })
   role!: Roles;
+
+  @Column({ default: false })
+  verified!: boolean;
 }

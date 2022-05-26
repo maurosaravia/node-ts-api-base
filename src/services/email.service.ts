@@ -1,10 +1,13 @@
 import { SentMessageInfo, Transporter } from 'nodemailer';
 import * as hbs from 'nodemailer-express-handlebars';
-import { Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { EmailInterface } from '@interfaces';
 import { HandlebarsConstants } from '@constants/email';
 import { ErrorsMessages } from '@constants/errorMessages';
 import { emailClient } from '@server';
+import { User } from '@entities/user.entity';
+import { JWTService } from './jwt.service';
+import { BASE_URL, SENDER_EMAIL } from '@config';
 
 @Service()
 export class EmailService {
@@ -41,5 +44,13 @@ export class EmailService {
     } catch (error) {
       throw new Error(`${ErrorsMessages.EMAIL_NOT_SENT}: ${error}`);
     }
+  }
+
+  async sendVerification(user: User) {
+    const jwtService = Container.get(JWTService);
+    const token = jwtService.createVerificationToken(user);
+    EmailService.sendEmail({ from: SENDER_EMAIL ?? '', to: user.email,
+      subject: 'Email verification',
+      text: `Click on the link to verify your account ${ BASE_URL??'' + token }` });
   }
 }

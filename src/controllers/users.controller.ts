@@ -11,13 +11,14 @@ import {
   CurrentUser
 } from 'routing-controllers';
 import { InsertResult, UpdateResult, DeleteResult } from 'typeorm';
-import { Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { User } from '@entities/user.entity';
 import { UsersService } from '@services/users.service';
 import { ErrorsMessages } from '../constants/errorMessages';
 import { SignUpDTO } from '@dto/signUpDTO';
 import { EntityMapper } from '@clients/mapper/entityMapper.service';
 import { Roles } from '@constants/Roles';
+import { EmailService } from '@services/email.service';
 
 @JsonController('/users')
 @Service()
@@ -74,5 +75,24 @@ export class UserController {
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.usersService.deleteUser(id);
+  }
+
+  @Get('verify/:token')
+  async verify(
+    @Param('token') token: string
+  ) {
+    return this.usersService.verifyAccount(token);
+  }
+
+  @Authorized()
+  @Post('resend/')
+  async resendVerification(
+    @CurrentUser() id: number
+  ) {
+    const user = await this.usersService.showUser(id);
+    if (user) {
+      const emailService = Container.get(EmailService);
+      await emailService.sendVerification(user);
+    }
   }
 }

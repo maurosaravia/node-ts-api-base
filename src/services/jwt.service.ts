@@ -34,6 +34,21 @@ export class JWTService {
     });
   }
 
+  async createVerificationToken(user: User): Promise<string> {
+    return new Promise((resolve, reject) => {
+      try {
+        const token = jwt.sign(
+          { data: { userId: user.id, createdAt: new Date().toString() } },
+          JWT_SECRET || JWT_SECRET_DEFAULT,
+          { expiresIn: '1d' }
+        );
+        resolve(token);
+      } catch (error) {
+        reject(new Error('Error creating verification token'));
+      }
+    });
+  }
+
   async verifyJWT(token = ''): Promise<AuthInterface.ITokenPayload> {
     return new Promise((resolve, reject) => {
       try {

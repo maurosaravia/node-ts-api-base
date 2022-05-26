@@ -1,5 +1,5 @@
 import { ErrorsMessages } from '@constants/errorMessages';
-import { Service } from 'typedi';
+import { Container, Service } from 'typedi';
 import { getRepository } from 'typeorm';
 import { User } from '@entities/user.entity';
 import { UsersService } from '@services/users.service';
@@ -10,6 +10,7 @@ import { RedisError } from '@exception/redis.error';
 import { HttpError } from 'routing-controllers';
 import { HttpStatusCode } from '@constants/httpStatusCode';
 import { Roles } from '@constants/Roles';
+import { EmailService } from './email.service';
 
 @Service()
 export class SessionService {
@@ -24,7 +25,10 @@ export class SessionService {
     user.role = Roles.User;
     this.userService.hashUserPassword(user);
     try {
-      return await this.userRepository.save(user);
+      const result = await this.userRepository.save(user);
+      const emailService = Container.get(EmailService);
+      emailService.sendVerification(user);
+      return result;
     } catch (error) {
       throw new DatabaseError(ErrorsMessages.USER_ALREADY_EXISTS);
     }
