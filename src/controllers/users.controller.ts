@@ -115,4 +115,20 @@ export class UserController {
   ) {
     return this.usersService.resetPassword(passwordDTO.token, passwordDTO.password);
   }
+
+  @Authorized(Roles.User)
+  @Post('contactAdmins')
+  async contactUsers(
+    @CurrentUser() id: number,
+    @Body() message: string
+  ) {
+    const user = await this.usersService.showUser(id);
+    if (user) {
+      const admins = await this.usersService.listAdmins();
+      const emailService = Container.get(EmailService);
+      admins.forEach(admin => {
+        emailService.sendContact(user, admin.email, message);
+      });
+    }
+  }
 }

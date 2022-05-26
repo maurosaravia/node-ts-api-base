@@ -4,6 +4,7 @@ import { getRepository } from 'typeorm';
 import { User } from '@entities/user.entity';
 import { JWTService } from '@services/jwt.service';
 import { AuthInterface, UserInterface } from '@interfaces';
+import { Roles } from '@constants/Roles';
 
 @Service()
 export class UsersService {
@@ -30,6 +31,10 @@ export class UsersService {
 
   listUsers() {
     return this.userRepository.find();
+  }
+
+  listAdmins() {
+    return this.userRepository.find({ where: { role: Roles.Admin } });
   }
 
   showUser(id: number) {

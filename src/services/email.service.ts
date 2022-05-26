@@ -63,4 +63,13 @@ export class EmailService {
       text: `Click on the link to reset your password 
       ${BASE_URL??''}/users/resetPassword?token=${token}` });
   }
+
+  async sendContact(user: User, to: string, message: string) {
+    EmailService.sendEmail({ from: SENDER_EMAIL ?? '', to: to,
+      subject: user.email + ' Contact',
+      text: `A user askes a question <br>
+      - Name: ${user.firstName??'' + user.lastName??''} <br>
+      - Email: ${user.email} <br>
+      - Question: ${message}` });
+  }
 }
